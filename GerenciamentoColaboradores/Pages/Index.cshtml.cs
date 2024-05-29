@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GerenciamentoColaboradores.Data;
@@ -23,6 +24,30 @@ namespace GerenciamentoColaboradores.Pages
         {
             Colaboradores = await _context.Colaboradores.Include(c => c.Cargo).ToListAsync();
             Cargos = await _context.Cargos.ToListAsync();
+        }
+
+        public async Task<IActionResult> OnPostCreateAsync(Colaborador colaborador)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            _context.Colaboradores.Add(colaborador);
+            await _context.SaveChangesAsync();
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostEditAsync(Colaborador colaborador)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            _context.Attach(colaborador).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return RedirectToPage();
         }
     }
 }
