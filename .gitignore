@@ -1,0 +1,40 @@
+# Arquivos de Byte compilados
+bin/
+obj/
+
+# Arquivos de configurações sensíveis
+appsettings.json
+appsettings.Development.json
+
+# Pasta usada por ferramentas do ASP.NET
+Properties/
+
+# Arquivos de logs
+*.log
+*.log.*
+
+# Pastas de pacotes
+packages/
+*.nupkg
+
+# Ferramentas de desenvolvimento
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Arquivos de ambiente de desenvolvimento
+.vs/
+.vscode/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+[Pp]roperties/
