@@ -1,10 +1,65 @@
 ﻿@page
-@model IndexModel
+@model GerenciamentoColaboradores.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Lista de Colaboradores";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>@ViewData["Title"]</h1>
+
+<input type="text" id="search" placeholder="Pesquisar colaboradores..." />
+<button id="searchButton">Pesquisar</button>
+<button id="createButton">Criar Novo Colaborador</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Cargo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var colaborador in Model.Colaboradores)
+        {
+            <tr data-id="@colaborador.Id">
+                <td>@colaborador.Nome</td>
+                <td>@colaborador.Email</td>
+                <td>@colaborador.Telefone</td>
+                <td>@colaborador.Cargo.Nome</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal para criação e edição -->
+<div id="modal" style="display:none;">
+    <h2 id="modalTitle"></h2>
+    <form id="modalForm">
+        <input type="hidden" id="colaboradorId" />
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required />
+        <br />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+        <span id="emailError" style="color:red;display:none;">Email inválido</span>
+        <br />
+        <label for="telefone">Telefone:</label>
+        <input type="text" id="telefone" name="telefone" required />
+        <br />
+        <label for="cargo">Cargo:</label>
+        <select id="cargo" name="cargo">
+            @foreach (var cargo in Model.Cargos)
+            {
+                <option value="@cargo.Id">@cargo.Nome</option>
+            }
+        </select>
+        <br />
+        <button type="submit">Salvar</button>
+        <button type="button" id="cancelButton">Cancelar</button>
+    </form>
 </div>
+
+@section Scripts {
+    <script src="~/js/modal.js" ></script>
+}
