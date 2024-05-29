@@ -15,6 +15,7 @@
         document.getElementById('email').value = data.email || '';
     }
 
+        console.log('ok');
     createButton.addEventListener('click', function () {
         showModal('Criar Novo Colaborador');
     });
