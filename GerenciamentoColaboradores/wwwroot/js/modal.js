@@ -1,11 +1,41 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById('modal');
-    const modalForm = document.getElementById('modalForm');
     const emailInput = document.getElementById('email');
     const emailError = document.getElementById('emailError');
     const createButton = document.getElementById('createButton');
-    const searchButton = document.getElementById('searchButton');
     const cancelButton = document.getElementById('cancelButton');
+    const closeModal = document.getElementById('closeModal');
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#colaboradoresTable tbody tr');
+
+    searchButton.addEventListener('click', function () {
+        const searchText = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            const found = Array.from(cells).some(cell => {
+                const content = cell.textContent.toLowerCase();
+                const match = content.includes(searchText);
+                return match;
+            });
+            row.style.display = found ? 'table-row' : 'none';
+        });
+    });
+
+    function performSearch(query) {
+        // Suponha que você tenha uma lista de itens no HTML
+        const items = document.querySelectorAll('.item'); // Todos os itens têm a classe 'item'
+        items.forEach(item => {
+            // Suponha que o texto que queremos filtrar esteja no item
+            if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
+                item.style.display = ''; // Mostra o item
+            } else {
+                item.style.display = 'none'; // Esconde o item
+            }
+        });
+    }
+
 
     function showModal(title, data = {}) {
         document.getElementById('modalTitle').innerText = title;
@@ -15,7 +45,10 @@
         document.getElementById('email').value = data.email || '';
     }
 
-        console.log('ok');
+    function closeModalFunction() {
+        modal.style.display = 'none';
+    }
+
     createButton.addEventListener('click', function () {
         showModal('Criar Novo Colaborador');
     });
@@ -32,10 +65,6 @@
         });
     });
 
-    modalForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        // Lógica para salvar os dados do formulário.
-    });
 
     cancelButton.addEventListener('click', function () {
         modal.style.display = 'none';
@@ -46,4 +75,6 @@
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         emailError.style.display = regex.test(email) ? 'none' : 'block';
     });
+
+    closeModal.addEventListener('click', closeModalFunction);
 });

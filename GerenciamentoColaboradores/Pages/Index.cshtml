@@ -4,62 +4,101 @@
     ViewData["Title"] = "Lista de Colaboradores";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
 
-<input type="text" id="search" placeholder="Pesquisar colaboradores..." />
-<button id="searchButton">Pesquisar</button>
-<button id="createButton">Criar Novo Colaborador</button>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
 
-<table>
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Cargo</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var colaborador in Model.Colaboradores)
-        {
-            <tr data-id="@colaborador.Id">
-                <td>@colaborador.Nome</td>
-                <td>@colaborador.Email</td>
-                <td>@colaborador.Telefone</td>
-                <td>@colaborador.Cargo.Nome</td>
+    <div class="input-group mb-3">
+        <input type="text" id="searchInput" placeholder="Pesquisar colaboradores..." />
+
+        <div class="button-container">
+            <button id="searchButton">Pesquisar</button>
+        </div>
+    </div>
+    <div class="button-container" >
+        <button id="createButton">Criar Novo Colaborador</button>
+    </div>
+
+    <table class="table table-striped" id="colaboradoresTable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Cargo</th>
             </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Modal para criação e edição -->
-<div id="modal" style="display:none;">
-    <h2 id="modalTitle"></h2>
-    <form id="modalForm">
-        <input type="hidden" id="colaboradorId" />
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required />
-        <br />
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required />
-        <span id="emailError" style="color:red;display:none;">Email inválido</span>
-        <br />
-        <label for="telefone">Telefone:</label>
-        <input type="text" id="telefone" name="telefone" required />
-        <br />
-        <label for="cargo">Cargo:</label>
-        <select id="cargo" name="cargo">
-            @foreach (var cargo in Model.Cargos)
+        </thead>
+        <tbody>
+            @if (Model.ViewModel.Colaboradores != null && Model.ViewModel.Colaboradores.Any()) // Verifica se há colaboradores
             {
-                <option value="@cargo.Id">@cargo.Nome</option>
+                foreach (var colaborador in Model.ViewModel.Colaboradores)
+                {
+                    <tr data-id="@colaborador.Id" data-cargo-id="@colaborador.CargoId">
+                        <td>@colaborador.Nome</td>
+                        <td>@colaborador.Email</td>
+                        <td>@colaborador.Telefone</td>
+                        <td>@colaborador.Cargo.Nome</td>
+                    </tr>
+                }
             }
-        </select>
-        <br />
-        <button type="submit">Salvar</button>
-        <button type="button" id="cancelButton">Cancelar</button>
-    </form>
+            else
+            {
+                <tr>
+                    <td colspan="4">Nenhum colaborador cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Modal para criação e edição -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <form method="post" id="modalForm">
+                <input type="hidden" asp-for="ViewModel.Colaborador.Id" id="colaboradorId" name="Id"/>
+                <div class="form-group">
+                    <label asp-for="ViewModel.Colaborador.Nome">Nome:</label>
+                    <input type="text" asp-for="ViewModel.Colaborador.Nome" class="form-control" id="nome" name="nome" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ViewModel.Colaborador.Email">Email:</label>
+                    <input type="email" asp-for="ViewModel.Colaborador.Email" class="form-control" id="email" name="email" required />
+                    <span id="emailError" style="color:red;display:none;">Email inválido</span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ViewModel.Colaborador.Telefone">Telefone:</label>
+                    <input type="text" asp-for="ViewModel.Colaborador.Telefone" class="form-control" id="telefone" name="telefone" required />
+                </div>
+                    @if (Model.ViewModel.Cargos != null && Model.ViewModel.Cargos.Any())
+                    {
+                    <select asp-for="ViewModel.Colaborador.CargoId" asp-items="@(new SelectList(Model.ViewModel.Cargos, "Id", "Nome"))" class="form-control" id="CargoId" name="CargoId" required>
+                            <option value="">Selecione um cargo</option>
+                        </select>
+                    }
+                else
+                {
+                    <p>Não há cargos disponíveis.</p>
+                }
+
+                <div class="button-container">
+                    <button type="submit" asp-page-handler="Create">Salvar</button>
+                </div>
+
+                <div class="button-container">
+                    <button type="button" id="cancelButton" >Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    <script src="~/js/modal.js" ></script>
+    <script src="~/js/modal.js"></script>
 }
